@@ -22,12 +22,11 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 
 def generate_record_key(record):
-    def generate_record_key(record):
-        dt = record.get("datetime")
-        dt_str = dt.strftime("%m/%d/%Y %I:%M %p") if dt else "N/A"
-        start = record.get("start_address", "N/A")
-        end = record.get("end_address", "N/A")
-        return f"{dt_str}|{start}|{end}"
+    dt = record.get("datetime")
+    dt_str = dt.strftime("%m/%d/%Y %I:%M %p") if dt else "N/A"
+    start = record.get("start_address", "N/A").strip().lower()
+    end = record.get("end_address", "N/A").strip().lower()
+    return f"{dt_str}|{start}|{end}"
 
 
 def find(pattern, text, default="N/A"):
@@ -194,8 +193,8 @@ def log_to_excel(records):
             else:
                 dt_str = str(dt_cell) if dt_cell else "N/A"
 
-            start_cell = row[6] if row[6] else "N/A"
-            end_cell = row[7] if row[7] else "N/A"
+            start_cell = row[6].strip().lower() if row[6] else "N/A"
+            end_cell = row[7].strip().lower() if row[7] else "N/A"
             key = f"{dt_str}|{start_cell}|{end_cell}"
             existing_keys.add(key)
 
