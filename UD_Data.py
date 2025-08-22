@@ -293,23 +293,15 @@ def process_images():
                 trip_index += 1
                 break
 
+    skipped_count = 0
     for k, entry in enumerate(raw_data):
         if k not in matched:
-            print(f"⚠️ Unmatched file: {entry['filename']}")
-            renamed = rename_file(entry["datetime"], "UNMATCHED")
-
-            original_path = os.path.join(SOURCE_DIR, entry["filename"])
-            sorted_path = get_sorted_path(entry["datetime"], renamed)
-
-            shutil.copy2(original_path, sorted_path)
-            shutil.move(original_path, os.path.join(PROCESSED_DIR, entry["filename"]))
-
-            entry["filename"] = renamed
-            audit_log.append(entry)
-            trip_index += 1
+            # Skip unmatched image — do not log or move
+            skipped_count += 1
+            print(f"⚠️ Skipped unmatched image: {entry['filename']} remains in to_sort/")
 
     log_to_excel(audit_log)
-    print(f"\n✅ Processing complete. {len(audit_log)} entries logged.")
+    print(f"\n✅ Processing complete. {len(audit_log)} entries logged. {skipped_count} unmatched images skipped.")
 
 
 if __name__ == "__main__":
