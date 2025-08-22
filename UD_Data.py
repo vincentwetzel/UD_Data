@@ -188,10 +188,15 @@ def log_to_excel(records):
         # Build set of existing record keys
         existing_keys = set()
         for row in ws.iter_rows(min_row=2, values_only=True):
-            dt_cell = row[0] if row[0] else "N/A"
+            dt_cell = row[0]
+            if isinstance(dt_cell, datetime):
+                dt_str = dt_cell.strftime("%m/%d/%Y %I:%M %p")
+            else:
+                dt_str = str(dt_cell) if dt_cell else "N/A"
+
             start_cell = row[6] if row[6] else "N/A"
             end_cell = row[7] if row[7] else "N/A"
-            key = f"{dt_cell}|{start_cell}|{end_cell}"
+            key = f"{dt_str}|{start_cell}|{end_cell}"
             existing_keys.add(key)
 
         new_entries = 0
